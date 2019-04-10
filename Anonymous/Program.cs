@@ -10,22 +10,22 @@ namespace Lambda
     // простейшую форму регистрации
     delegate int LengthLogin(string s);
     delegate bool BoolPassword(string s1, string s2);
-    delegate void Captha(string s1, string s2);
+    delegate void Captcha(string s1, string s2);
 
     class Program
     {
         private static void SetLogin()
         {
-            Console.Write("Введите логин: ");
+            Console.Write("Введите логин (от 4 до 25 символов): ");
             string login = Console.ReadLine();
 
             // Используем лямбда-выражение
             LengthLogin lengthLoginDelegate = s => s.Length;
 
             int lengthLogin = lengthLoginDelegate(login);
-            if (lengthLogin > 25)
+            if (lengthLogin > 25 || lengthLogin < 4)
             {
-                Console.WriteLine("Слишком длинное имя\n");
+                Console.WriteLine("Некорректная длина логина!\n");
 
                 // Рекурсия на этот же метод, чтобы ввести заново логин
                 SetLogin();
@@ -47,14 +47,14 @@ namespace Lambda
             if (bp(password1, password2))
             {
                 Random ran = new Random();
-                string resCaptha = "";
+                string resCaptcha = "";
                 for (int i = 0; i < 10; i++)
-                    resCaptha += (char)ran.Next(0, 100);
-                Console.WriteLine("Введите код: " + resCaptha);
+                    resCaptcha += (char)ran.Next(0, 100);
+                Console.WriteLine("Введите код: " + resCaptcha);
                 string resCode = Console.ReadLine();
 
                 // Реализуем блочное лямбда-выражение
-                Captha cp = (s1, s2) =>
+                Captcha cp = (s1, s2) =>
                 {
                     if (s1 == s2)
                         Console.WriteLine("Регистрация удалась!");
@@ -62,7 +62,7 @@ namespace Lambda
                         Console.WriteLine("Не переживайте, в следующий раз получится :)");
                     return;
                 };
-                cp(resCaptha, resCode);
+                cp(resCaptcha, resCode);
             }
             else
                 Console.WriteLine("Регистрация провалилась. Пароли не совпадают");
