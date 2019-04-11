@@ -35,38 +35,50 @@ namespace Lambda
         static void Main()
         {
             SetLogin();
-
-            Console.Write("Введите пароль: ");
-            string password1 = Console.ReadLine();
-            Console.Write("Повторите пароль: ");
-            string password2 = Console.ReadLine();
-
-            // Используем лямбда выражение
-            BoolPassword bp = (s1, s2) => s1 == s2;
-
-            if (bp(password1, password2))
+            string password1 = "", password2 = "";
+            bool isCorrectPasswords = false;
+            do
             {
-                Random ran = new Random();
-                string resCaptcha = "";
-                for (int i = 0; i < 10; i++)
-                    resCaptcha += (char)ran.Next(0, 100);
-                Console.WriteLine("Введите код: " + resCaptcha);
-                string resCode = Console.ReadLine();
-
-                // Реализуем блочное лямбда-выражение
-                Captcha cp = (s1, s2) =>
+                do
                 {
-                    if (s1 == s2)
-                        Console.WriteLine("Регистрация удалась!");
-                    else
-                        Console.WriteLine("Не переживайте, в следующий раз получится :)");
-                    return;
-                };
-                cp(resCaptcha, resCode);
-            }
-            else
-                Console.WriteLine("Регистрация провалилась. Пароли не совпадают");
+                    Console.Write("Введите пароль: ");
+                    password1 = Console.ReadLine();
+                } while (!Anonymous.Password.IsCorrectPassword(password1));
 
+                Console.Write("Повторите пароль: ");
+                password2 = Console.ReadLine();
+
+                // Используем лямбда выражение
+                BoolPassword bp = (s1, s2) => s1.Equals(s2);
+
+                isCorrectPasswords = bp(password1, password2);
+                if (!isCorrectPasswords)
+                    Console.WriteLine("Регистрация провалилась. Пароли не совпадают");
+
+            } while (!isCorrectPasswords);
+
+            Console.WriteLine("Спасибо! Пароль подходит...");
+
+
+            Random ran = new Random();
+            string resCaptcha = "";
+            for (int i = 0; i < 4; i++)
+                resCaptcha += (char)ran.Next(33, 100);
+            Console.WriteLine("Введите код: " + resCaptcha);
+            string resCode = Console.ReadLine();
+
+            // Реализуем блочное лямбда-выражение
+            Captcha cp = (s1, s2) =>
+            {
+                if (s1.Equals(s2))
+                    Console.WriteLine("Регистрация удалась!");
+                else
+                    Console.WriteLine("Не переживайте, в следующий раз получится :)");
+                return;
+            };
+
+            cp(resCaptcha, resCode);
         }
     }
 }
+
