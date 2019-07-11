@@ -14,7 +14,7 @@ namespace Lambda
 
     class Program
     {
-        private static void SetLogin()
+        private static string SetLogin()
         {
             Console.Write("Введите логин (от 4 до 25 символов): ");
             string login = Console.ReadLine();
@@ -30,11 +30,13 @@ namespace Lambda
                 // Рекурсия на этот же метод, чтобы ввести заново логин
                 SetLogin();
             }
+
+            return login;
         }
 
         static void Main()
         {
-            SetLogin();
+            string login = SetLogin();
             string password1 = "", password2 = "";
             bool isCorrectPasswords = false;
             do
